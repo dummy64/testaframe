@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Colors</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <!-- <script src="sunflower.js"></script> -->
+    <!-- <script src="script.js"></script> -->
+
+</head>
+<body>
+    <a-scene>
+        <a-assets>
+            <img id="sky" src="../../../images/L12-IMGs/clear-sunny-sky.jpg">
+            <img id="earth" src="images/earth-2.jpg">
+            <img id="greenGrass" src="images/greenGrass.jpg">
+            <a-asset-item id="sunFlowerField" src="images/sunflower_field/scene.gltf"></a-asset-item>
+            <!-- <a-asset-item id="rose" src="images/red_rose/scene.gltf"></a-asset-item> -->
+
+          </a-assets>
+          <a-light type="ambient" intensity="2"></a-light>
+        <a-sky src="#sky" ></a-sky>
+        <a-entity id="sunflowerModel" gltf-model="#sunFlowerField" scale="0.001 0.001 0.001"></a-entity>
+                 <a-plane material="color:#FFFFFF;
+                           src:#earth;
+                           repeat:5000 5000;
+                           normal-map:#floor-NRM;
+                           normal-texture-repeat:5000 5000"
+                        rotation= "-90 0 0" 
+                        scale="10000 10000 1">
+                        </a-plane>
+                        <!-- <a-entity id="roseModel" gltf-model="#rose" position="-4 2 0"></a-entity> -->
+    </a-scene>
+</body>
+</html>
