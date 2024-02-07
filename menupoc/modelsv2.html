@@ -12,27 +12,31 @@
 </head>
 <body>
 	<a-scene gui-env>
+		<a-assets>
+            <audio id="river" src="music/music.mp3" preload="auto"></audio>
+          </a-assets>
 
-		<a-gui-flex-container 
+		<a-gui-flex-container
 			flex-direction="column" justify-content="center" align-items="normal" component-padding="0.1" 
 			opacity="0.7" width="3.5" height="4.5"
 			position="0 5 -10" rotation="0 0 0"
 			panel-color="#212121"
 		>
-			<a-gui-button 
+			<!-- <a-gui-button 
 				width="3" height="0.75"
-				onclick="testButtonAction" key-code="32"
-				value="test button"
+				onclick="startButtonAction" key-code="32"
+				value="START"
 				margin="0 0 0.05 0"
 				active-color="#f44336"
 				background-color="#ECEFF1"
 				hover-color="#CFD8DC"
 				border-color="#263238"
 				font-color="#263238"
+				id="startButton"
 			>
-			</a-gui-button>
+			</a-gui-button> -->
 
-			<a-gui-icon-label-button
+			<!-- <a-gui-icon-label-button
 				width="3" height="0.75"
 				onclick="testButtonAction"
 				value="label button"
@@ -84,11 +88,11 @@
 				active-color="#FFEB3B"
 				handle-color="#1A237E"
 			>
-			</a-gui-radio>
+			</a-gui-radio> -->
 
 		</a-gui-flex-container>
 
-
+		<a-entity sound="src: #river"></a-entity>
 		<!-- Camera + cursor. -->
 		<a-entity id="cameraRig" position="0 1.6 0">
 			<a-camera look-controls wasd-controls position="0 0 0">
@@ -107,23 +111,44 @@
 
 	<script type="text/javascript">
 
-		function startTimer(duration, display) {
-		    var timer = duration, minutes, seconds;
-		    setInterval(function () {
-		        seconds = parseInt(timer % 60, 10);
-		        seconds = seconds < 10 ? "0" + seconds : seconds;
-		        display.setAttribute('count-down', seconds);
-		        if (--timer < 0) {
-		            timer = duration;
-		        }
-		    }, 1000);
+		// function startTimer(duration, display) {
+		//     var timer = duration, minutes, seconds;
+		//     setInterval(function () {
+		//         seconds = parseInt(timer % 60, 10);
+		//         seconds = seconds < 10 ? "0" + seconds : seconds;
+		//         display.setAttribute('count-down', seconds);
+		//         if (--timer < 0) {
+		//             timer = duration;
+		//         }
+		//     }, 1000);
+		// }
+
+		// window.onload = function () {
+		//     var countDownEntity = document.getElementById("timer"),
+		//     	duration = countDownEntity.getAttribute('count-down');
+ 		//     	startTimer(duration, countDownEntity);
+		// };
+
+		let currentState = "START";
+
+		window.onload = function(){
+			addModelButtons("start");
 		}
 
-		window.onload = function () {
-		    var countDownEntity = document.getElementById("timer"),
-		    	duration = countDownEntity.getAttribute('count-down');
- 		    	startTimer(duration, countDownEntity);
-		};
+		function raiseInitStartEvent() {
+			var customEvent = new Event('initialStart', {
+				bubbles: true,  // Whether the event bubbles up through the DOM or not
+				cancelable: true // Whether the event can be canceled using event.preventDefault()
+			});
+			// Dispatch the custom event to the window
+			window.dispatchEvent(customEvent);
+		}
+
+		window.addEventListener('initialStart', function(event) {
+			hideModelBaseItems();
+			hideAllModels();
+			addModelButtons("start");
+		});
 
 		window.timedout = function () {
 			console.log("GUI timer timed out");
@@ -145,7 +170,114 @@
 			console.log("clicked GUI");
 		}
 
+		window.startButtonAction = function () {
+			var entity = document.querySelector('[sound]');
+			if(entity){
+    			entity.components.sound.playSound();
+			}
 
+			console.log("start button");
+			var el = document.querySelector("#startButton");
+			el.parentNode.removeChild(el);
+
+			addModelButtons('flowers');
+			addModelButtons('animals');
+			addModelButtons('fruits');
+			addModelButtons('BackToStart');
+		}
+		window.BackToStartButtonAction = function () {
+			raiseInitStartEvent();
+		}
+		function addModelButtons(modelItem) {
+			var scene = document.querySelector('a-gui-flex-container');
+
+			// Create a new A-Frame entity
+			var newEntity = document.createElement('a-gui-button');
+
+
+			// Set attributes for the new entity
+			newEntity.setAttribute('width', '3');
+			newEntity.setAttribute('key-code', '32');
+			newEntity.setAttribute('value', modelItem);
+			// newEntity.setAttribute('margin', '0 0 0.05 0');
+			newEntity.setAttribute('active-color', '#f44336');
+			newEntity.setAttribute('background-color', '#ECEFF1');
+			newEntity.setAttribute('border-color', '#263238');
+			newEntity.setAttribute('font-color', '#263238');
+			newEntity.setAttribute('id', modelItem+"Button");
+			newEntity.setAttribute('onclick', modelItem+'ButtonAction');
+			// Append the new entity to the scene
+			scene.appendChild(newEntity);
+		}
+
+		function onClickHandler(modelNumber) {
+			return modelButtonAction(modelNumber); // Call the function with the parameter
+		}
+		function hideAllModels(){
+			var scene = document.querySelector('#gltfModel');
+			if(scene){
+				scene.parentNode.removeChild(scene);
+			}
+		}
+
+		window.model1ButtonAction = function () {
+			hideAllModels();
+			modelButtonAction('model1');
+		}
+
+		window.model2ButtonAction = function () {
+			hideAllModels();
+			modelButtonAction('model2');
+		}
+
+		window.model3ButtonAction = function () {
+			hideAllModels();
+			modelButtonAction('model3');
+		}
+
+		function modelButtonAction(modelItem) {
+			var scene = document.querySelector('a-scene');
+
+				// Create a new A-Frame entity
+				var newModel = document.createElement('a-entity');
+
+				// Set attributes for the new entity
+				newModel.setAttribute('gltf-model', 'models/fruits/'+modelItem+'/scene.gltf');
+				newModel.setAttribute('position', '0 0 -5'); // Set the position of the model
+				newModel.setAttribute('id', "gltfModel");
+				if(modelItem == 'model1') {
+					newModel.setAttribute('scale','1 1 1');
+				} else if (modelItem == 'model2'){
+					newModel.setAttribute('scale','0.1 0.1 0.1');
+				} else{
+					newModel.setAttribute('scale','2 2 2');
+				}
+				
+				// Append the new entity to the scene
+				scene.appendChild(newModel);
+		}
+		function hideModelBaseItems(){
+			var models=  ['flowers','fruits','animals','BackToStart','model1','model2','model3'];
+			for (let model in models){
+				var el = document.querySelector("#"+models[model]+'Button');
+				if(el) {
+					el.parentNode.removeChild(el);
+				}
+			}
+			
+		}
+		window.fruitsButtonAction = function () {
+			hideModelBaseItems();
+			addFruitElements();
+		}
+
+		function addFruitElements(){
+			var models = ['model1','model2','model3','BackToStart'];
+			for(let model in models){
+
+				addModelButtons(models[model]);
+			}
+		}
 
 		var data = document.querySelector("#cursor");
 		var controls;
@@ -157,23 +289,12 @@
 			this.design = "ring";
 		};
 
-		window.onload = function() {
-			controls = new initControls();
-			setValue();
-			var gui = new dat.GUI();
-			gui.addColor(controls, 'color').onChange(setValue);
-			gui.addColor(controls, 'hoverColor').onChange(setValue);
-			gui.addColor(controls, 'activeColor').onChange(setValue);
-			gui.add(controls, 'design',["dot", "ring", "reticle", "cross"]).onChange(setValue);
-		};
-
 		function setValue() {
 			data.setAttribute('color',controls.color);
 			data.setAttribute('hover-color',controls.hoverColor);
 			data.setAttribute('active-color',controls.activeColor);
 			data.setAttribute('design',controls.design);
 		}
-
 
 
 	</script>

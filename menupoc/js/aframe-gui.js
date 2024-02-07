@@ -782,6 +782,7 @@
                 }
                 //end dot design
             } else if (data.design == 'ring') {
+              console.log("asdfasdfasdf");
                 el.setAttribute('geometry', 'primitive: ring; radiusInner:0.0225; radiusOuter:0.0275');
                 el.setAttribute('material', 'color: ' + data.color + '; shader: flat; opacity:1;');
                 el.setAttribute('position', '0 0 ' + data.distance);
