@@ -1,0 +1,97 @@
+{
+  "data": [
+    {
+      "grade": "grade3",
+      "gradeDisplayName": "Grade 3",
+      "topics": [
+        {
+          "category": "Astronomy",
+          "name": "TheSolarSystem",
+          "displayName": "The Solar System",
+          "models": [
+            {
+              "id": 0,
+              "displayName": "Solar System",
+              "folderName": "solar_system_model_orrery"
+            },
+            {
+              "id": 1,
+              "displayName": "Sun",
+              "folderName": "sun"
+            },
+            {
+              "id": 2,
+              "displayName": "Mercury",
+              "folderName": "mercury_enhanced_color"
+            },
+            {
+              "id": 3,
+              "displayName": "Venus",
+              "folderName": "venus"
+            },
+            {
+              "id": 4,
+              "displayName": "Earth",
+              "folderName": "earth_1"
+            },
+            {
+              "id": 5,
+              "displayName": "Mars",
+              "folderName": "mars"
+            },
+            {
+              "id": 6,
+              "displayName": "Jupiter",
+              "folderName": "jupiter"
+            },
+            {
+              "id": 7,
+              "displayName": "Saturn",
+              "folderName": "saturn_1"
+            },
+            {
+              "id": 8,
+              "displayName": "Uranus",
+              "folderName": "realistic_uranus_4k"
+            },
+            {
+              "id": 9,
+              "displayName": "Neptune",
+              "folderName": "neptune"
+            },
+            {
+              "id": 10,
+              "displayName": "Moon",
+              "folderName": "moon"
+            },
+            {
+              "id": 11,
+              "displayName": "Galaxy",
+              "folderName": "need_some_space"
+            }
+          ]
+        },
+        {
+            "category": "Geography",
+            "name": "Test1",
+            "displayName": "Test2"
+        },
+        {
+            "category": "Maths",
+            "name": "Test1",
+            "displayName": "Test2"
+        },
+        {
+            "category": "Phsyics",
+            "name": "Test1",
+            "displayName": "Test2"
+        },
+        {
+            "category": "Astronomy",
+            "name": "Test1",
+            "displayName": "Test2"
+        }
+      ]
+    }
+  ]
+}

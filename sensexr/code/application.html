@@ -1,0 +1,150 @@
+<html>
+
+<head>
+    <title>VR Models</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+
+    <!-- slice9: Create panels and backgrounds. -->
+    <script src="https://unpkg.com/aframe-slice9-component@1.0.0/dist/aframe-slice9-component.min.js"></script>
+    <!-- layout: Arrange and position entities automatically. -->
+    <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
+    <!-- environment: Pretty stage presets. -->
+    <!-- <script
+        src="https://unpkg.com/aframe-environment-component@2.0.0/dist/aframe-environment-component.min.js"></script> -->
+    <!-- proxy-event: Declaratively capture and event and reroute it to another entity. -->
+    <script
+        src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+    <!-- render-order: Control rendering order for transparent objects. -->
+    <script
+        src="https://unpkg.com/aframe-render-order-component@1.0.0/dist/aframe-render-order-component.min.js"></script>
+    <!-- state: Manage application state and bind it to parts of the application to automatically react to state changes. -->
+    <script src="https://unpkg.com/aframe-state-component@6.6.0/dist/aframe-state-component.min.js"></script>
+
+    <script>AFRAME.registerComponent('raycastable', {});</script>
+    <script>
+        fetch('../applicationData.json')
+            .then(res => res.json())
+            .then((data) => {
+                console.log(data);
+                window['data'] = window['data'] || {};
+                Object.assign(window['data'], data.data);
+            });
+    </script>
+    <script src="category-changer.js"></script>
+    <script src="topic-click.js"></script>
+    <script src="grade-click.js"></script>
+    <script src="button-colors.js"></script>
+    <!-- State definition. -->
+
+    <script src="state.js"></script>
+</head>
+
+<body>
+    <a-scene render-order="menuItem, button" >
+        <a-assets>
+            <!-- Images. -->
+            <a-asset-item id="village" src="../Models/Astronomy/TheSolarSystem/earth_1/scene.gltf"></a-asset-item>
+            <img id="pageIconImg"
+                src="https://cdn.glitch.com/0ddef241-2c1a-4bc2-8d47-58192c718908%2FdownIcon.png?1557829539105">
+            <img id="sliceImg"
+                src="https://cdn.glitch.com/0ddef241-2c1a-4bc2-8d47-58192c718908%2Fslice.png?1557308835598" crossorigin>
+            <img id="logoImg"
+                src="https://cdn.glitch.com/0ddef241-2c1a-4bc2-8d47-58192c718908%2Fsymbol-transparent.png?1557312318582"
+                crossorigin>
+
+            <!-- Base mixins. -->
+            <a-mixin id="font" text="font: roboto"></a-mixin>
+            <a-mixin id="slice"
+                slice9="color: #050505; transparent: true; opacity: 0.9; src: #sliceImg; left: 50; right: 52; top: 50; bottom: 52; padding: 0.15"></a-mixin>
+
+            <!-- Menu and button mixins. Mixins can be composed from other mixins. -->
+            <a-mixin id="buttonBackground" mixin="slice" slice9="width: 1.3; height: 0.3; color: #030303"
+                render-order="button"></a-mixin>
+            <a-mixin id="buttonHoverEffect"
+                animation__mouseenter="property: components.slice9.material.color; type: color; from: #030303; to: #333; easing: easeOutCubic; dur: 150; startEvents: mouseenter"
+                animation__mouseleave="property: components.slice9.material.color; type: color; from: #333; to: #030303; easing: easeOutCubic; dur: 150; startEvents: mouseleave"></a-mixin>
+            <a-mixin id="buttonText" mixin="font"
+                text="align: center; width: 2.5; zOffset: 0.01; color: #333"></a-mixin>
+            <a-mixin id="button" mixin="buttonBackground buttonHoverEffect buttonText" render-order="button"
+                proxy-event="event: click; to: a-scene; captureBubbles: true"></a-mixin>
+            <a-mixin id="pageButton" geometry="primitive: plane; width: 0.15; height: 0.15"
+                material="src: #pageIconImg; shader: flat; transparent: true"
+                animation__mouseenter="property: components.material.material.color; type: color; from: #FFF; to: #AAF; dur: 100; startEvents: mouseenter"
+                animation__mouseleave="property: components.material.material.color; type: color; from: #AAF; to: #FFF; dur: 100; startEvents: mouseleave"></a-mixin>
+        </a-assets>
+        <a-entity id="entities" bind__visible="hideMenu">
+
+            <a-entity id="modelPrev" mixin="pageButton" position="-2.471 1.031 -4.38" rotation="0 0 -90" proxy-event="event: click; to: a-scene; as: modelPagePrev" bind-toggle__raycastable="menu === 'topics'" bind__visible="modelPage !== 0"></a-entity>
+            <a-entity id="modelNext" mixin="pageButton" position="2.471 1.031 -4.38" rotation="0 0 90" proxy-event="event: click; to: a-scene; as: modelPageNext" bind-toggle__raycastable="menu === 'topics'" bind__visible="modelNumPagesGreaterThanModelPage"></a-entity>
+        </a-entity>
+        <a-entity id="menu" position="0 2.2 -4" bind__visible="!hideMenu">
+            <!-- <a-entity id="menuBackground" mixin="slice" slice9="height: 5; width: 2; color: #171717"
+                render-order="menuBackground"></a-entity> -->
+            <a-entity id="menuBack" mixin="pageButton" scale="1.5 1.5 1.5" position="-0.8 2 0.02" rotation="0 0 -90"
+                proxy-event="event: click; to: a-scene; as: menuBack" bind-toggle__raycastable="menu !== 'main'"
+                bind__visible="menu !== 'main'" render-order="menuItem"></a-entity>
+
+
+            <!-- Main menu. -->
+            <a-mixin id="buttonMain" mixin="button" bind-toggle__raycastable="menu === 'main'"></a-mixin>
+            <a-entity id="mainMenu" bind__visible="menu === 'main'" position="0 1 0" background="black">
+                <a-entity id="title" text="value: GRADES; color: #000; width: 4; align: center" position="0 1.2 0.01"
+                    render-order="menuItem"></a-entity>
+                <a-entity id="logo" geometry="primitive: plane; width: 0.7; height: 0.7"
+                    material="src: #logoImg; transparent: true; shader: flat" position="0 0.65 0.02"
+                    render-order="menuitem"></a-entity>
+
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.5" position="0 0 0.02"
+                    bind-for="for: grade; in: gradeOptions" grade-click button-colors>
+                    <template>
+                        <a-entity mixin="button" text="color: #FFF; value: {{ grade }}"
+                            bind-toggle__raycastable="menu === 'main'"></a-entity>
+                    </template>
+                    <!-- <a-entity mixin="buttonMain" text="value: Set Environment; color: #F85333" proxy-event="as: menuEnvironment"></a-entity>
+              <a-entity mixin="buttonMain" text="value: Randomize; color: #48BAEA" proxy-event="as: environmentRandomize"></a-entity>
+              <a-entity mixin="buttonMain" text="value: Weather; color: #e0cb49" proxy-event="as: menuWeather"></a-entity> -->
+                </a-entity>
+            </a-entity>
+
+
+            <a-entity id="categoryMenu" bind__visible="menu === 'categories'">
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.5" position="0 2 0.02"
+                    bind-for="for: category; in: categoryOptions" category-changer button-colors>
+                    <template>
+                        <a-entity mixin="button" text="color: #FFF; value: {{ category }}"
+                            bind-toggle__raycastable="menu === 'categories'"></a-entity>
+                    </template>
+                </a-entity>
+            </a-entity>
+
+            <a-entity id="categoryDataMenu" bind__visible="menu === 'topics'">
+                <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.5" position="0 2 0.02" id="categoryDataMenuButtons"
+                    bind-for="for: category; in: categoryData" topic-click button-colors>
+                    <template>
+                        <a-entity mixin="button" text="color: #FFF; value: {{ category.name }}"
+                            bind-toggle__raycastable="menu === 'topics'"></a-entity>
+                    </template>
+                </a-entity>
+            </a-entity>
+
+
+            <!-- Environment menu.
+          <a-entity id="environmentMenu" bind__visible="menu === 'environment'">
+            <a-entity class="buttons" layout="type: box; columns: 1; marginRow: -0.4" position="0 0.55 0.02" bind-for="for: environment; in: environmentOptions" environment-changer button-colors>
+              <template>
+                <a-entity mixin="button" text="color: #FFF; value: {{ environment }}" bind-toggle__raycastable="menu === 'environment'"></a-entity>
+              </template>
+            </a-entity>
+            
+            <a-entity id="environmentPrev" mixin="pageButton" position="-0.8 -1.15 0.02" rotation="0 0 -90" proxy-event="event: click; to: a-scene; as: environmentPagePrev" bind-toggle__raycastable="menu === 'environment'" bind__visible="environmentPage !== 0"></a-entity>
+            <a-entity id="environmentNext" mixin="pageButton" position="0.8 -1.15 0.02" rotation="0 0 90" proxy-event="event: click; to: a-scene; as: environmentPageNext" bind-toggle__raycastable="menu === 'environment'" bind__visible="environmentPage <= (environmentNumPages - 2)"></a-entity>
+          </a-entity>
+         -->
+            <!-- Mouse cursor so we can click on the scene with mouse or touch. -->
+            <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: [raycastable]"></a-entity>
+            <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: [raycastable]"></a-entity>
+            <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: [raycastable]"></a-entity>
+    </a-scene>
+</body>
+
+</html>
